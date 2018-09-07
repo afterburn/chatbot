@@ -29,9 +29,6 @@
       { "text": "and most importantly..." },
       { "text": "On page 42 of Harry Potter and the Philosopher's Stone, Harry discovers he's a wizard." }
     ],
-    "choices": [
-      { "text": "What the fuck." },
-      { "text": "Are you kidding me?" }
-    ]
+    "choices": []
   }
 }
