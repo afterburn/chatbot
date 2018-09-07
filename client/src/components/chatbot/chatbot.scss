@@ -1,0 +1,141 @@
+@keyframes fadein {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeout {
+  0% {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+$animation-speed: 200ms;
+$animation-func: cubic-bezier(0.075, 0.82, 0.165, 1);
+$arrow-size: 10px;
+
+.fade-out {
+  animation: fadeout 300ms ease-in-out forwards !important;
+}
+
+.chatbot {
+  width: 30vw;
+  display: table;
+  margin: 0 auto;
+  padding: 50px 0;
+  
+  .choices {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+    margin: 30px 0;
+
+    .choice {
+      padding: 10px;
+      display: table;
+      float: left;
+      font-size: 0.9em;
+      background-color: #4353FF;
+      color: rgba(255, 255, 255, 1);
+      cursor: pointer;
+      margin-left: 10px;
+      border-radius: 3px;
+      box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
+      animation: fadein 300ms ease-in-out forwards;
+      transition: background-color $animation-speed $animation-func,
+                  box-shadow $animation-speed $animation-func,
+                  color $animation-speed $animation-func;
+
+      &:hover {
+        background-color: #3342ee;
+        color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        transition: background-color $animation-speed $animation-func,
+                    box-shadow $animation-speed $animation-func,
+                    color $animation-speed $animation-func;
+      }
+    }
+  }
+
+  .message-container {
+    display: table;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .message {
+      max-width: 65%;
+      width: auto;
+      display: table;
+      padding: 10px;
+      font-size: 0.9em;
+      background: white;
+      border-radius: 3px;
+      position: relative;
+      box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
+      animation: fadein 300ms ease-in-out forwards;
+    }
+
+    &.user {
+      margin: 30px 0;
+      .message {
+        float: right;
+        border-top-right-radius: 0px;
+        transform-origin: top right;
+        background-color: #4353FF;
+        color: rgba(255, 255, 255, 1);
+
+        &::before {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: 100%;
+          content: "";
+          width: 0;
+          height: 0;
+          border: 0 solid transparent;
+          border-right-width: $arrow-size;
+          border-left-width: 0px;
+          border-top: $arrow-size solid #4353FF;
+        }
+      }
+    }
+
+    &.bot {
+      .message {
+        float: left;
+        border-top-left-radius: 0px;
+        transform-origin: top left;
+
+        &::before {
+          display: block;
+          position: absolute;
+          top: 0;
+          left: -#{$arrow-size};
+          content: "";
+          width: 0;
+          height: 0;
+          border: 0 solid transparent;
+          border-left-width: $arrow-size;
+          border-right-width: 0px;
+          border-top: $arrow-size solid white;
+        }
+      }
+    }
+  }
+}

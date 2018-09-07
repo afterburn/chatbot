@@ -1,0 +1,37 @@
+{
+  "welcome": {
+    "messages": [
+      { "text": "Hello, my name is Watson!" },
+      { "text": "I'm currently learning about human behaviour and I need your help to improve myself." },
+      { "text": "Will you help me?" }
+    ],
+    "choices": [
+      { "text": "Yeah, sure.", "intent": "help-watson" },
+      { "text": "No thanks.", "intent": "dont-help-watson" }
+    ]
+  },
+  "help-watson": {
+    "messages": [
+      { "text": "Great, let me tell you something that is very dear to me." },
+      { "text": "According to the movie 'The Hitchhiker's Guide to the Galaxy', the answer of life is 42." }
+    ],
+    "choices": [
+      { "text": "Uhh.. great." },
+      { "text": "Why are you telling me this?", "intent": "tell-about-42" }
+    ]
+  },
+  "tell-about-42": {
+    "messages": [
+      { "text": "Well, the number 42 marks some very special events in human history." },
+      { "text": "For example:" },
+      { "text": "Queen Victoria's husband Prince Albert died aged 42; they had 42 grandchildren and their great-grandson, Edward VIII, abdicated at the age of 42." },
+      { "text": "The world's first book printed with movable type is the Gutenberg Bible which has 42 lines per page." },
+      { "text": "and most importantly..." },
+      { "text": "On page 42 of Harry Potter and the Philosopher's Stone, Harry discovers he's a wizard." }
+    ],
+    "choices": [
+      { "text": "What the fuck." },
+      { "text": "Are you kidding me?" }
+    ]
+  }
+}
