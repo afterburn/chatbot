@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { FetchHelper, Queue } from '../../helpers'
 import Brain from './brain.json'
 
 import './chatbot.scss'
@@ -7,6 +8,9 @@ class Chatbot extends Component {
   constructor (props) {
     super(props)
     this.idCounter = 0
+    this.messageCount = 0
+    this.messageQueue = new Queue((item, meta) => this.onItemDequeued(item, meta))
+    this.currentIntent = null
     this.state = {
       items: []
     }
@@ -18,26 +22,44 @@ class Chatbot extends Component {
 
   loadIntent (name) {
     if (Brain.hasOwnProperty(name)) {
-      const intent = Brain[name]
-      let messageCount = 0
+      this.messageCount = 0
+      const intent = this.currentIntent = Brain[name]
       for (let i=0;i<intent.messages.length;i++) {
         const message = intent.messages[i]
-        const ttl = message.ttl || 1000
-        setTimeout(() => {
-          const item = this.createMessage(this.idCounter, message.text, 'bot')
+        this.messageQueue.enqueue({ ...message, index: i })
+      }
+      this.messageQueue.enqueue({ choices: intent.choices })
+    }
+  }
+
+  onItemDequeued (item, meta) {
+    const isMessage = !item.hasOwnProperty('choices')
+    if (isMessage === true) {
+      this.appendMessage(item, meta)
+      this.messageCount++
+    } else {
+      this.showChoices(this.currentIntent)
+    }
+  }
+
+  appendMessage (message, meta) {
+    const type = message.type || 'default'
+    if (type === 'default') {
+      const item = this.createMessageElement(this.idCounter, message.text, 'bot')
+      const items = [...this.state.items, item]
+      this.setState({ items })
+    }
+    if (type === 'fetch') {
+      switch (message.key) {
+        case 'weather': {
+          const item = this.createMessageElement(this.idCounter, `It will be around ${meta.temperature} degrees Celsius in ${meta.city} today.`, 'bot')
           const items = [...this.state.items, item]
           this.setState({ items })
-          messageCount++
-
-          if (messageCount === intent.messages.length) {
-            setTimeout(() => {
-              this.showChoices(intent)
-            }, 1000)
-          }
-          this.idCounter++
-        }, i * ttl)
+          break
+        }
       }
     }
+    this.idCounter++
   }
 
   showChoices (intent) {
@@ -56,7 +78,7 @@ class Chatbot extends Component {
       .forEach(choiceElement => choiceElement.classList.add('fade-out'))
     
     setTimeout(() => {
-      const item = this.createMessage(this.idCounter, choice.text, 'user')
+      const item = this.createMessageElement(this.idCounter, choice.text, 'user')
       items.push(item)
       this.idCounter++
 
@@ -67,7 +89,7 @@ class Chatbot extends Component {
     }, 300)
   }
 
-  createMessage (key, text, type) {
+  createMessageElement (key, text, type) {
     return <div key={key} className={'message-container ' + type}>
       <div className='message'>{text}</div>
     </div>

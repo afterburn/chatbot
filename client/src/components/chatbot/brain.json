@@ -7,7 +7,7 @@
     ],
     "choices": [
       { "text": "Yeah, sure.", "intent": "help-watson" },
-      { "text": "No thanks.", "intent": "dont-help-watson" }
+      { "text": "No, tell me today's weather.", "intent": "tell-weather" }
     ]
   },
   "help-watson": {
@@ -30,5 +30,15 @@
       { "text": "On page 42 of Harry Potter and the Philosopher's Stone, Harry discovers he's a wizard." }
     ],
     "choices": []
+  },
+  "tell-weather": {
+    "messages": [
+      { "text": "Let me fetch today's weather for you." },
+      { "key": "weather", "type": "fetch" }
+    ],
+    "choices": [
+      { "text": "Nice, what should I be doing today?" },
+      { "text": "Bummer, is there anything I could be doing today?" }
+    ]
   }
 }
