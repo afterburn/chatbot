@@ -9,7 +9,7 @@ class Chatbot extends Component {
     super(props)
     this.idCounter = 0
     this.messageCount = 0
-    this.messageQueue = new Queue((item, meta) => this.onItemDequeued(item, meta))
+    this.messageQueue = new Queue((item) => this.onItemDequeued(item), (item, meta) => this.onResponse(item, meta))
     this.currentIntent = null
     this.state = {
       items: []
@@ -32,17 +32,17 @@ class Chatbot extends Component {
     }
   }
 
-  onItemDequeued (item, meta) {
+  onItemDequeued (item) {
     const isMessage = !item.hasOwnProperty('choices')
     if (isMessage === true) {
-      this.appendMessage(item, meta)
+      this.appendMessage(item)
       this.messageCount++
     } else {
       this.showChoices(this.currentIntent)
     }
   }
 
-  appendMessage (message, meta) {
+  appendMessage (message) {
     const type = message.type || 'default'
     if (type === 'default') {
       const item = this.createMessageElement(this.idCounter, message.text, 'bot')
@@ -50,16 +50,26 @@ class Chatbot extends Component {
       this.setState({ items })
     }
     if (type === 'fetch') {
-      switch (message.key) {
-        case 'weather': {
-          const item = this.createMessageElement(this.idCounter, `It will be around ${meta.temperature} degrees Celsius in ${meta.city} today.`, 'bot')
-          const items = [...this.state.items, item]
-          this.setState({ items })
-          break
-        }
-      }
+      const item = this.createMessageElement(this.idCounter, '...', 'bot')
+      const items = [...this.state.items, item]
+      this.setState({ items })
     }
     this.idCounter++
+  }
+
+  onResponse (message, meta) {
+    switch (message.key) {
+      case 'weather': {
+        this.updateMessageElement(this.idCounter - 1, `It will be around ${meta.temperature} degrees Celsius in ${meta.city} today.`)
+        break
+      }
+    }
+  }
+
+  updateMessageElement (id, message) {
+    const items = [...this.state.items]
+    const item = document.body.querySelector(`.message-container[data-id="${id}"] .message`)
+    item.innerHTML = message
   }
 
   showChoices (intent) {
@@ -90,7 +100,7 @@ class Chatbot extends Component {
   }
 
   createMessageElement (key, text, type) {
-    return <div key={key} className={'message-container ' + type}>
+    return <div key={key} data-id={key} className={'message-container ' + type}>
       <div className='message'>{text}</div>
     </div>
   }

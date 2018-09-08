@@ -1,10 +1,11 @@
 import FetchHelper from './fetch-helper'
 
 class Queue {
-  constructor (callback) {
+  constructor (onDone, onUpdate) {
     this.isProcessing = false
     this.queue = []
-    this.callback = callback
+    this.onDone = onDone
+    this.onUpdate = onUpdate
   }
 
   enqueue (item) {
@@ -18,17 +19,20 @@ class Queue {
     const ttl = this.determineTTL(item)
 
     if (item.type === 'fetch') {
+      setTimeout(() => {
+        this.onDone(item)
+      }, ttl)
       if (item.key === 'weather') {
         FetchHelper.get(FetchHelper.resolve('weather'))
         .then(weatherData => {
-          this.callback(item, weatherData)
+          this.onUpdate(item, weatherData)
           this.isProcessing = false
           this.tryProcessNext()
         })
       }
     } else {
       setTimeout(() => {
-        this.callback(item)
+        this.onDone(item)
         this.isProcessing = false
         this.tryProcessNext()
       }, ttl)
